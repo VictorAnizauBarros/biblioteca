@@ -23,10 +23,43 @@ class Pedido {
         return false;
     }
     public function listarPedidosPendentes() {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE status = 'pendente'";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt;
-    }
+    $sql = "SELECT p.id, p.status, p.data_pedido,
+                   u.nome AS nome_usuario,
+                   l.titulo AS titulo_livro
+            FROM pedidos p
+            JOIN usuarios u ON p.usuario_id = u.id
+            JOIN livros l ON p.livro_id = l.id
+            WHERE p.status = 'pendente'
+            ORDER BY p.data_pedido DESC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt;
+}
+
+
+    public function buscarPedidoPorId($id) {
+    $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':id', $id);
+    $stmt->execute();
+    return $stmt;
+}
+
+public function atualizarStatus($id, $status) {
+    $query = "UPDATE " . $this->table_name . " SET status = :status WHERE id = :id";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':status', $status);
+    $stmt->bindParam(':id', $id);
+    return $stmt->execute();
+}
+
+public function excluirPedido($id) {
+    $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':id', $id);
+    return $stmt->execute();
+}
 }
 ?>
