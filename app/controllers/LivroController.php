@@ -1,4 +1,7 @@
+
 <?php 
+require_once __DIR__ . '/../helpers/auth_helper.php';
+
     require_once __DIR__ . '/../models/Livro.php';
     require_once __DIR__ . '/../config/database.php';
 
@@ -12,11 +15,13 @@
         }
 
         public function listar() {
+            verificarPermissao(['bibliotecario']);
             $livros = $this->livro->listarLivros();
             include __DIR__ . '/../views/livro_listar.php';
         }
 
         public function adicionar() {
+            verificarPermissao(['bibliotecario']);
             if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $titulo = $_POST['titulo'];
                 $autor = $_POST['autor'];
@@ -33,6 +38,7 @@
         }
 
         public function editar() {
+            verificarPermissao(['bibliotecario']);
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $id = $_POST['id'];
                 $titulo = $_POST['titulo'];

@@ -61,5 +61,30 @@ public function excluirPedido($id) {
     $stmt->bindParam(':id', $id);
     return $stmt->execute();
 }
+
+public function listarPedidos($usuarioId = null, $papel = null) {
+    if ($papel === 'aluno') {
+        $stmt = $this->conn->prepare("
+            SELECT p.id, p.livro_id, u.nome AS nome_usuario, l.titulo AS titulo_livro, p.status, p.data_pedido
+            FROM pedidos p
+            JOIN usuarios u ON p.usuario_id = u.id
+            JOIN livros l ON p.livro_id = l.id
+            WHERE p.usuario_id = :usuario_id
+        ");
+        $stmt->bindParam(':usuario_id', $usuarioId);
+        $stmt->execute();
+    } else {
+        $stmt = $this->conn->query("
+            SELECT p.id, p.livro_id, u.nome AS nome_usuario, l.titulo AS titulo_livro, p.status, p.data_pedido
+            FROM pedidos p
+            JOIN usuarios u ON p.usuario_id = u.id
+            JOIN livros l ON p.livro_id = l.id
+        ");
+    }
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
 }
 ?>

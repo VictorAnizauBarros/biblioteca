@@ -20,17 +20,33 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?controller=livro&action=listar">Livros</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?controller=pedido&action=listar">Pedidos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?controller=auth&action=logout">Sair</a>
-                    </li>
+                    <?php if (isset($_SESSION['usuario'])) : ?>
+                        <?php if ($_SESSION['usuario']['papel'] === 'bibliotecario') : ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.php?controller=livro&action=listar">Livros</a>
+                            </li>
+                        <?php endif; ?>
+
+                        <?php if ($_SESSION['usuario']['papel'] === 'aluno') : ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.php?controller=pedido&action=listar">Pedidos</a>
+                            </li>
+                        <?php endif; ?>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.php?controller=auth&action=logout">Sair</a>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php if ($_SESSION['usuario']['papel'] === 'bibliotecario') : ?>
+    <li class="nav-item">
+        <a class="nav-link" href="index.php?controller=pedido&action=gerenciar">Gerenciar Pedidos</a>
+    </li>
+<?php endif; ?>
+
                 </ul>
             </div>
         </div>
