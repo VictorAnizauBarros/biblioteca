@@ -73,5 +73,13 @@ public function excluirLivro($id) {
     return false;
 }
 
+public function reduzirQuantidade($livro_id) {
+    $query = "UPDATE livros SET quantidade = quantidade - 1 WHERE id = :id AND quantidade > 0";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':id', $livro_id, PDO::PARAM_INT);
+    return $stmt->execute();
+}
+
+
 }
 ?>

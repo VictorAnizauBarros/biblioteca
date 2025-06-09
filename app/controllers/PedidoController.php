@@ -86,9 +86,24 @@ public function atualizarStatus() {
     $id = $_POST['id'];
     $status = $_POST['status'];
 
-    $this->pedido->atualizarStatus($id,$status);
+    // Atualizar o status do pedido
+    $this->pedido->atualizarStatus($id, $status);
+
+    // Se o status for "aceito", reduzir a quantidade de livros
+    if ($status === 'aceito') {
+        // Buscar o ID do livro relacionado ao pedido
+        $stmt = $this->pedido->buscarPedidoPorId($id);
+        $pedido = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($pedido) {
+            $livro_id = $pedido['livro_id'];
+            $livroModel = new Livro($this->conn);
+            $livroModel->reduzirQuantidade($livro_id);
+        }
+    }
 
     header("Location: index.php?controller=pedido&action=gerenciar");
 }
+
 }
 ?>
